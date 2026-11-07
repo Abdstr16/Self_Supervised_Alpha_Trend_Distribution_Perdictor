@@ -1,3 +1,4 @@
+
 # Forecasting immediate market movement
 
 EECE 490 · Milestone 1 mathematical formulation
@@ -53,14 +54,14 @@ Use centered knot indices, exclude the two fit endpoints, and start without knot
 
 Fitted log levels $`0.000,0.002,0.004,0.003`$ have successive increments $`0.002,0.002,-0.001`$. The centered differences are $`0`$ at the second session and $`-0.003`$ at the third. Only the third session is a knot at the provisional tolerance.
 
-For asset $`j`$, a candidate penalty scale is $`\lambda_j=\kappa\,\operatorname{median}|\Delta p_{j,i}|`$, using a positive scale estimated in a training-only design prefix. Prespecify a grid for $`\kappa`$, examine completion, durations, class support and sensitivity, and freeze the chosen rule before comparing forecasts. A larger penalty can remove knots and reduce the number of usable labels.
+For asset $`j`$, a candidate penalty scale is $`\lambda_j=\kappa\,\mathrm{median}|\Delta p_{j,i}|`$, using a positive scale estimated in a training-only design prefix. Prespecify a grid for $`\kappa`$, examine completion, durations, class support and sensitivity, and freeze the chosen rule before comparing forecasts. A larger penalty can remove knots and reduce the number of usable labels.
 
 ## 3. Primary target and boundary cases
 
 Let $`K_t`$ be the interior knots from the frozen fit for origin $`t`$. With full observation support, the completed movement ends at
 
 ```math
-b=\min\{i\in K_t:t<i\le U\}.
+b=\min\{i\in K_t:t\lt i\le U\}.
 ```
 
 If the set is empty, record the outcome as right-censored at $`U`$. The target starts at $`t`$, and endpoint eligibility depends on the first admissible future knot. A knot at $`t`$ is the starting boundary for the outgoing fitted movement. A knot before $`t`$ provides retrospective context. The first admissible knot strictly after $`t`$ determines the end.
@@ -74,7 +75,7 @@ s_t &= \frac{\widehat x^{(t)}_b-\widehat x^{(t)}_t}{b-t},\\
 c_t &=
 \begin{cases}
 \text{Up},   & s_t>\varepsilon,\\
-\text{Down}, & s_t<-\varepsilon,\\
+\text{Down}, & s_t\lt-\varepsilon,\\
 \text{Flat}, & |s_t|\le\varepsilon,
 \end{cases}
 \qquad \varepsilon=0.0005\ \text{provisionally}.
@@ -151,7 +152,7 @@ The trend filter estimates its fitted levels jointly. Extending its support can 
 
 For the first row, the second difference at session 2 is $`0.60-2(0.20)-0.10=0.10`$. After appending one observation it becomes $`0.45-2(0.20)-0.05=0`$. Session 2 loses its knot and session 3 gains one. If the illustrative origin is session 1, the first retrospective knot shifts from 2 to 3 across the two fits.
 
-To verify the two solutions, write $`D`$ for the second-difference operator and $`p`$ for the observed vector. The convex optimality condition is $`x=p-D^\top q`$, where $`q_i=\lambda\operatorname{sign}((Dx)_i)`$ at nonzero differences and $`|q_i|\le\lambda`$ at zeros. The first solution uses $`q=(0.10)`$. The second uses $`q=(0.05,-0.10)`$. Substitution gives the listed fitted levels in both cases.
+To verify the two solutions, write $`D`$ for the second-difference operator and $`p`$ for the observed vector. The convex optimality condition is $`x=p-D^\top q`$, where $`q_i=\lambda\mathrm{sign}((Dx)_i)`$ at nonzero differences and $`|q_i|\le\lambda`$ at zeros. The first solution uses $`q=(0.10)`$. The second uses $`q=(0.05,-0.10)`$. Substitution gives the listed fitted levels in both cases.
 
 For example, origins 100 and 101 use windows 81–130 and 82–131. Even when both origins appear to lie in the same movement, their independently fitted boundaries can differ. The Milestone 2 stability report will quantify adjacent-boundary disagreements and shifts over shared eligible follow-up, distinguish naturally elapsed boundaries, and audit sensitivity to the penalty, both window lengths and knot tolerance. It will report completion, censoring, episode counts and class balance alongside eligible origin counts.
 
@@ -232,4 +233,3 @@ Open choices include data length and adjustment vintage, penalty calibration, mi
 [1] EECE 490 project proposal, *Probabilistic Forecasting of Future Market Trends and Volatility Envelopes*, §§1, 4–6, Figure 1 and Table 3.
 
 [2] S.-J. Kim, K. Koh, S. Boyd and D. Gorinevsky, “ℓ₁ Trend Filtering,” *SIAM Review* 51(2), 339–360 (2009). DOI 10.1137/070690274.
-
